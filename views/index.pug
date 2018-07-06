@@ -1,0 +1,76 @@
+extends layout
+
+block scripts
+	link(href='custom/custom_table.css', rel='stylesheet') 
+	script(src='clientscripts/index.js')
+block content
+	.main-content
+		.container
+			.row
+				.col-lg-12.text-center
+					h2.mt-5
+						| List of content			
+					p
+						| Type something in the input field to search the table:
+					input#myInput.form-control(type="text" placeholder="Search..")
+					br
+					table.table.table-striped
+						thead
+							tr
+								th Fetch
+								th Title
+								th Created
+								th Website
+								th Description
+						tfoot
+							tr
+								td(colspan="5")
+									.row
+										.col-11
+											if pages > 0
+											- var i = (Number(current) > 5 ? Number(current) - 4 : 1)
+												ul.pagination.text-center
+													if current == 1
+														li.page-item.disabled
+															a.page-link First
+													else
+														li.page-item
+															a(class='page-link' href="/?page=1") First
+													if i !== 1
+														li.page-item.disabled
+															a.page-link ...
+													- for (; i <= (Number(current) + 4) && i <= pages; i++) {
+														if (i == current)
+															li.page-item.active
+																a.page-link= i
+														else
+															li.page-item
+																a(class='page-link' href="/?page="+ i)= i
+														if (i == Number(current) + 4 && i < pages)
+															li.page-item.disabled
+																a.page-link ...
+													- }
+													if (current == pages)
+														li.page-item.disabled
+															a.page-link Last
+													else
+														li.page-item
+															a(class='page-link' href="/?page="+ pages) Last
+										.col-1
+											a(href='/add')
+												span.glyphicon.glyphicon-plus
+											|    
+											a(href='/add/generate-fake-data')
+												span.glyphicon.glyphicon-fire
+						tbody#myTable
+							for doc in addresslist
+								tr
+									td 
+										a(href='https://mam.tangle.army/fetch?address='+ doc.root)
+											span.glyphicon.glyphicon-search
+									td= doc.title				
+									td= doc.datestamp				
+									td= doc.website				
+									td= doc.description
+					p Just a simple example
+	

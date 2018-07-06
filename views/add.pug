@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  .main-content
+    .container
+      .row
+        .col-lg-12.text-center
+          h2.mt-5
+            | Add Content to MAM-Channel-Directory
+          form(action='/add/submit_root', method='POST')
+            .input-group
+              span.input-group-prepend
+                i.glyphicon.glyphicon-font
+              input#root.form-control(type='text', name='title', placeholder='Short title',required='')     
+            .input-group
+              span.input-group-addon
+                i.glyphicon.glyphicon-leaf
+              input#root.form-control(type='text', name='root', placeholder='Root address',required='')      
+            .input-group
+              span.input-group-addon
+                i.glyphicon.glyphicon-globe   
+              input#website.form-control(type='text', name='website', placeholder='Publisher website') 
+            .input-group
+              span.input-group-addon
+                i.glyphicon.glyphicon-comment
+              textarea#description.form-control(type='text', name='description', placeholder='Additional Info', required='')
+            .form-group
+              button.btn.btn-default(type="submit") Submit
+
+
+
+  //- ul
+  //-   .list-group
+  //-     a.list-group-item.list-group-item-action.active(href='#')
+  //-         .d-flex.w-100.justify-content-between
+  //-         | Content
+  //-     for doc in addresslist      
+  //-       a.list-group-item.list-group-item-action.flex-column.align-items-start(href='#')
+  //-         .d-flex.w-100.justify-content-between
+  //-           h5.mb-1= doc.title
+  //-             small= doc.datestamp
+  //-         p.mb-1= doc.description
+  //-         small= doc.root
+
