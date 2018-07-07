@@ -9,20 +9,24 @@ block content
             | Add Content to MAM-Channel-Directory
           form(action='/add/submit_root', method='POST')
             .input-group
-              span.input-group-prepend
-                i.glyphicon.glyphicon-font
-              input#root.form-control(type='text', name='title', placeholder='Short title',required='')     
+              .input-group-prepend
+                .input-group-text
+                  i.glyphicon.glyphicon-globe
+              input#title.form-control(type='text', name='title', placeholder='Short title',required='')     
             .input-group
-              span.input-group-addon
-                i.glyphicon.glyphicon-leaf
+              .input-group-prepend
+                .input-group-text
+                  i.glyphicon.glyphicon-leaf
               input#root.form-control(type='text', name='root', placeholder='Root address',required='')      
             .input-group
-              span.input-group-addon
-                i.glyphicon.glyphicon-globe   
+              .input-group-prepend
+                .input-group-text
+                  i.glyphicon.glyphicon-globe   
               input#website.form-control(type='text', name='website', placeholder='Publisher website') 
             .input-group
-              span.input-group-addon
-                i.glyphicon.glyphicon-comment
+              .input-group-prepend
+                .input-group-text
+                  i.glyphicon.glyphicon-comment
               textarea#description.form-control(type='text', name='description', placeholder='Additional Info', required='')
             .form-group
               button.btn.btn-default(type="submit") Submit
