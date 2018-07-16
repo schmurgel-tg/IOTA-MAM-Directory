@@ -71,5 +71,27 @@ router.get('/', function (req, res, next) {
         })
 });
 
+router.post('/', function (req, res, next) {
+    var findVal = {};
+    if (req.body.find && req.body.find != '')
+        findVal = { $text: { $search: req.body.find } }
 
+    Address
+        .find(findVal)
+        .sort('-timestamp')
+        .skip((PageSize * CurrentPage) - PageSize)
+        .limit(PageSize)
+        .exec(function (err, addresses) {
+            Address.countDocuments().exec(function (err, count) {
+                if (err) return next(err)
+                LastCount = count;
+                res.render('index', {
+                    addresslist: addresses,
+                    current: CurrentPage,
+                    pages: Math.ceil(count / PageSize),
+                    pageSize: PageSize
+                })
+            })
+        })
+});
 module.exports = router;

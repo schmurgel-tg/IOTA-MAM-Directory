@@ -12,16 +12,22 @@ block content
 						| List of content			
 					p
 						| Type something in the input field to search the table:
+					form(action="/", method="POST")
+						.input-group
+							input.form-control(type="text", name="find", placeholder="Search..")
+							.input-group-append
+								button.btn.btn-outline-primary(type='submit') Find
 					.input-group
-						input#myInput.form-control(type="text" placeholder="Search..")
+						input#myInput.form-control(type="text", placeholder="Filter..")
 						.input-group-append
-							button.btn.btn-outline-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')= 'Pagesize '+pageSize
+							button.btn.btn-outline-primary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')= 'Pagesize '+pageSize
 							.dropdown-menu
 								a.dropdown-item(href='/?pageSize=5') 5
 								a.dropdown-item(href='/?pageSize=10') 10
 								a.dropdown-item(href='/?pageSize=25') 25
 								a.dropdown-item(href='/?pageSize=50') 50
 								a.dropdown-item(href='/?pageSize=100') 100
+					
 					br
 					table.table.table-striped
 						thead
