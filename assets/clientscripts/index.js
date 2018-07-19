@@ -22,7 +22,7 @@ $(document).ready(function () {
 
 	$('#pageSizeOption button').on('click', function () {
 		console.log('Set page size to'+ $(this).text());
-		$('#pageSizeBtn').text('Page size ' + $(this).text());		
+		//$('#pageSizeBtn').text('Page size ' + $(this).text());		
 		$('#currentPageSize').val($(this).text());
 		startAction(2);
 	});
