@@ -14,6 +14,12 @@ $(document).ready(function () {
 		startAction(1);
 	});
 
+	$('#findInput').keyup(function(event) {
+		if (event.keyCode === 13) {
+			$("#findBtn").click();
+		}
+	});
+
 	$('#pageSizeOption button').on('click', function () {
 		console.log('Set page size to'+ $(this).text());
 		$('#pageSizeBtn').text('Page size ' + $(this).text());		
