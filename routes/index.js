@@ -52,30 +52,18 @@ router.get('/', function (req, res, next) {
 
 
 router.get('/', function (req, res, next) {
-    Address
-        .find({})
-        .sort('-timestamp')
-        .skip((PageSize * CurrentPage) - PageSize)
-        .limit(PageSize)
-        .exec(function (err, addresses) {
-            Address.countDocuments().exec(function (err, count) {
-                if (err) return next(err)
-                LastCount = count;
-                res.render('index', {
-                    addresslist: addresses,
-                    current: CurrentPage,
-                    pages: Math.ceil(count / PageSize),
-                    pageSize: PageSize
-                })
-            })
-        })
-});
+    var findVal = {};
+    findAddress(req,res,findVal);
+    });
 
 router.post('/', function (req, res, next) {
     var findVal = {};
     if (req.body.find && req.body.find != '')
-        findVal = { $text: { $search: req.body.find } }
+        findVal = { $text: { $search: req.body.find } };
+    findAddress(req,res,findVal);
+});
 
+function findAddress(req, res, findVal) {
     Address
         .find(findVal)
         .sort('-timestamp')
@@ -89,9 +77,14 @@ router.post('/', function (req, res, next) {
                     addresslist: addresses,
                     current: CurrentPage,
                     pages: Math.ceil(count / PageSize),
-                    pageSize: PageSize
+                    pageSize: PageSize,
+                    findValue: req.body.find
                 })
             })
         })
-});
+};
+
+
+
+
 module.exports = router;
