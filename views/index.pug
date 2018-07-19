@@ -9,25 +9,27 @@ block content
 			.row
 				.col-lg-12.text-center
 					h2.mt-5
-						| List of content			
+						| List of MAM-Channels			
 					p
-						| Type something in the input field to search the table:
-					form(action="/", method="POST")
-						.input-group
-							input.form-control(type="text", name="find", placeholder="Search..")
-							.input-group-append
-								button.btn.btn-outline-primary(type='submit') Find
+						| Type something in the input field to search the database:
+					.input-group
+						input#findInput.form-control(type="text", placeholder="Search..", value=findValue)
+						.input-group-append
+							button#findBtn.btn.btn-secondary(type='button') Find
+					br
+					p
+						| With this field you can filter the current table in real time:
 					.input-group
 						input#myInput.form-control(type="text", placeholder="Filter..")
 						.input-group-append
-							button.btn.btn-outline-primary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')= 'Pagesize '+pageSize
-							.dropdown-menu
-								a.dropdown-item(href='/?pageSize=5') 5
-								a.dropdown-item(href='/?pageSize=10') 10
-								a.dropdown-item(href='/?pageSize=25') 25
-								a.dropdown-item(href='/?pageSize=50') 50
-								a.dropdown-item(href='/?pageSize=100') 100
-					
+							button#pageSizeBtn.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false', value=pageSize)= 'PageSize '+ pageSize 
+							#pageSizeOption.dropdown-menu
+								button.dropdown-item 5
+								button.dropdown-item 10
+								button.dropdown-item 25
+								button.dropdown-item 50
+								button.dropdown-item 100
+						
 					br
 					table.table.table-striped
 						thead
@@ -42,35 +44,27 @@ block content
 								td(colspan="5")
 									.row
 										.col-11
-											if pages > 0
-											- var i = (Number(current) > 5 ? Number(current) - 4 : 1)
-												ul.pagination.text-center
-													if current == 1
-														li.page-item.disabled
-															a.page-link First
+											if maxPages > 0
+											- var i = (Number(currentPage) > 5 ? Number(currentPage) - 4 : 1)												
+												#paging.btn-group(role='toolbar')
+													if currentPage == 1
+														button.btn.btn-secondary(type='button', disabled) First
 													else
-														li.page-item
-															a(class='page-link' href="/?page=1") First
+														button.btn.btn-outline-secondary(value=1) First
 													if i !== 1
-														li.page-item.disabled
-															a.page-link ...
-													- for (; i <= (Number(current) + 4) && i <= pages; i++) {
-														if (i == current)
-															li.page-item.active
-																a.page-link= i
-														else
-															li.page-item
-																a(class='page-link' href="/?page="+ i)= i
-														if (i == Number(current) + 4 && i < pages)
-															li.page-item.disabled
-																a.page-link ...
+														button.btn.btn-outline-secondary(disabled) ...
+													- for (; i <= (Number(currentPage) + 4) && i <= maxPages; i++) {
+														if (i == currentPage)
+															button.btn.btn-secondary(type='button', value=i, disabled)= i	
+														else																
+															button.btn.btn-outline-secondary(type='button', value=i)= i
+														if (i == Number(currentPage) + 4 && i < maxPages)																
+															button.btn.btn-outline-secondary(disabled) ...
 													- }
-													if (current == pages)
-														li.page-item.disabled
-															a.page-link Last
+													if (currentPage == maxPages)
+														button.btn.btn-secondary(type='button', disabled) Last
 													else
-														li.page-item
-															a(class='page-link' href="/?page="+ pages) Last
+														button.btn.btn-outline-secondary(type='button', value=maxPages) Last
 										.col-1
 											a(href='/add')
 												span.glyphicon.glyphicon-plus
@@ -84,8 +78,15 @@ block content
 										a(href='https://mam.tangle.army/fetch?address='+ doc.root)
 											span.glyphicon.glyphicon-search
 									td= doc.title				
-									td= doc.datestamp				
+									- var timestamp = doc.timestamp.toLocaleString()
+									td= timestamp
 									td= doc.website				
 									td= doc.description
 					p Just a simple example
+					form#actionForm(action='/', method='POST', style='visibility:hidden')
+						input#currentPage(type='hidden', name='page', value=currentPage)
+						input#currentPageSize(type='hidden', name='pageSize', value=pageSize)
+						input#currentFindValue(type='hidden', name='findValue', value=findValue)
+						input#actionType(type='hidden', name='actionType')
+
 	

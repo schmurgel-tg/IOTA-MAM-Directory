@@ -1,12 +1,12 @@
 
-.table > tbody:hover > tr > * {
+/* .table > tbody:hover > tr > * {
     opacity: .6;
     -webkit-filter: blur(1px);
   }
 .table > tbody:hover > tr:hover > * {
     opacity: 1;
     -webkit-filter: blur(0px);
-  }
+  } */
   
   /* 
 Max width before this PARTICULAR table gets nasty

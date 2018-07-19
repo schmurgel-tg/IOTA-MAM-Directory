@@ -2,86 +2,74 @@ var express = require('express');
 var router = express.Router();
 var Address = require('../models/address');
 
-var possibleSorts = ['Title', 'Create', 'Website', 'Description'];
-var PageSize = 10;
-var CurrentPage = 1;
-var LastCount = 0;
-var SortBy = '';
-/* GET home page. */
+// var possibleSorts = ['Title', 'Create', 'Website', 'Description'];
 // router.get('/', function (req, res, next) {
-//     var db = req.db;
-//     var collection = db.get('addresses');
-//     var counting = collection.count();
-//     collection.find({}, {}, function (e, docs) {
-//         res.render('index', {
-//             addresscount: counting,
-//             addresslist: docs
-//         });
-//     });
+//     var sortBy = req.query.sortBy;
+//     if (sortBy != undefined &&
+//         possibleSorts.includes(sortBy.toUpperCase())) {
+//     }
+//     else {
+//         sortBy = '';
+//     }
+//     if (SortBy != sortBy) {
+//         SortBy = sortBy;
+//         console.log('Set SortBy to: ' + sortBy);
+//     }
 // });
 
+//prüft ob es sich um eine zahl handelt und diese größer 0 ist, liefert ansonsten den default wert
+function getNumberOrDefault(numberToCheck, defaultNumber) {
+    if (isNaN(numberToCheck) == false && numberToCheck > 0)
+        return parseInt(numberToCheck);
+    else
+        return defaultNumber;
+}
+
 router.get('/', function (req, res, next) {
-    var sortBy = req.query.sortBy;
-    if (sortBy != undefined &&
-        possibleSorts.includes(sortBy.toUpperCase())) {
-    }
-    else {
-        sortBy = '';
-    }
-    if (SortBy != sortBy) {
-        SortBy = sortBy;
-        console.log('Set SortBy to: ' + sortBy);
-    }
-    var pageSize = req.query.pageSize;
-    if (isNaN(pageSize) == false) {
-        PageSize = parseInt(pageSize);
-        if (LastCount !== 0 && CurrentPage * PageSize > LastCount) {
-            CurrentPage = Math.ceil(LastCount / PageSize);
-            console.log('Reset CurrentPage to:' + CurrentPage);
-        }
-        console.log('Set PageSize to:' + pageSize);
-    }
-    var page = req.query.page;
-    if (isNaN(page) == false) {
-        CurrentPage = parseInt(page);
-        console.log('Set CurrentPage to: ' + page);
-    }
-    //res.redirect(req.path);
-    next();
+    findAddress(res, next, null, 1, 10);
 });
-
-
-router.get('/', function (req, res, next) {
-    var findVal = {};
-    findAddress(req,res,findVal);
-    });
 
 router.post('/', function (req, res, next) {
-    var findVal = {};
-    if (req.body.find && req.body.find != '')
-        findVal = { $text: { $search: req.body.find } };
-    findAddress(req,res,findVal);
+    let find = req.body.findValue;
+    let page = getNumberOrDefault(req.body.page);
+    let pageSize = getNumberOrDefault(req.body.pageSize);
+    findAddress(res, next, find, page, pageSize);
 });
 
-function findAddress(req, res, findVal) {
-    Address
-        .find(findVal)
-        .sort('-timestamp')
-        .skip((PageSize * CurrentPage) - PageSize)
-        .limit(PageSize)
-        .exec(function (err, addresses) {
-            Address.countDocuments().exec(function (err, count) {
-                if (err) return next(err)
-                LastCount = count;
+function findAddress(res, next, find, page, pageSize) {
+
+    let findVal = {};
+    if (find && find != '')
+        findVal = { $text: { $search: find } };
+
+    Address.countDocuments(findVal).exec(function (err, completeCount) {
+        if (err) return next(err);
+
+        let pages = Math.ceil(completeCount / pageSize)
+        if (page > pages)
+            page = pages;
+
+        let skip = (pageSize * page) - pageSize;
+        if(skip < 0)
+            skip = 0;
+
+        Address
+            .find(findVal)
+            .sort('-timestamp')
+            .skip(skip)
+            .limit(pageSize)
+            .exec(function (err, addresses) {
+                if (err) return next(err);
+
                 res.render('index', {
                     addresslist: addresses,
-                    current: CurrentPage,
-                    pages: Math.ceil(count / PageSize),
-                    pageSize: PageSize,
-                    findValue: req.body.find
+                    currentPage: page,
+                    maxPages: pages,
+                    pageSize: pageSize,
+                    findValue: find
                 })
             })
-        })
+    })
 };
 
 
